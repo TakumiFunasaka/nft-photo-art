@@ -33,9 +33,21 @@
       </div>
     </section>
     <section class="image-wrapper" v-if="!locked">
-      <figure class="image">
-        <img src="../assets/images/sekiji.png" />
-      </figure>
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns is-centered">
+            <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+              <form action="" class="box">
+                <div class="field">
+                  <button class="button is-success" @click="unLock">
+                    check rice
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 </template>
@@ -50,7 +62,7 @@ export default {
   },
   methods: {
     unLock() {
-      if (this.password == "2798" || this.password == "２７９８") {
+      if (this.password == "0000") {
         this.locked = false;
       }
     }

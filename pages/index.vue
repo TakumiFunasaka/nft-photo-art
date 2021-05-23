@@ -5,70 +5,17 @@
         <div class="hero-body">
           <div class="container has-text-centered">
             <figure class="image p-5">
-              <img src="../assets/images/photoletter_logo.svg" />
+              <img src="../assets/images/ricetime.png" />
             </figure>
-          </div>
-        </div>
-        <div class="hero-foot">
-          <div class="container has-text-centered mb-4 pb-5">
-            <nuxt-link class="scroll" to="/" v-scroll-to="'#how-to-use'"
-              >SCROLL</nuxt-link
+            <div
+              class="button is-main2"
+              :disabled="!uploaded || !selected"
+              @click="generate"
             >
-            <nuxt-link class="arrow-down" to="/" v-scroll-to="'#how-to-use'"
-              ><figure class="mx-a image is-48x48">
-                <img src="../assets/images/arrow-down.png" /></figure
-            ></nuxt-link>
+              作成
+            </div>
           </div>
         </div>
-      </section>
-      <section class="section" id="how-to-use">
-        <div class="container p-4">
-          <h2 class="has-text-centered">使い方</h2>
-          <div class="one my-5">
-            <figure class="image mt-6">
-              <img src="../assets/images/htu1.jpg" />
-            </figure>
-            <p class="num mt-4">1.</p>
-            <p class="description mt-2">
-              お名前と、本日の式で撮影頂いたお写真の中で、ご自身と新郎新婦が写っているベストショットをお選びください。
-            </p>
-          </div>
-
-          <div class="two my-5">
-            <figure class="image mt-6">
-              <img src="../assets/images/htu2.jpg" />
-            </figure>
-            <p class="num mt-4">2.</p>
-            <p class="description mt-2">
-              新郎新婦からのお手紙を添えてお返しします。
-            </p>
-          </div>
-        </div>
-      </section>
-      <section class="section has-background-main1 px-6" id="form">
-        <h2 class="has-text-centered mb-5">写真のアップロード</h2>
-        <h2>お名前 - 検索が可能です</h2>
-        <v-select class="v-select" :options="options" v-model="selected" />
-
-        <h2 class="mt-6 mb-3">お写真 - タップして選択</h2>
-        <div class="upload">
-          <input type="file" name="file" id="file" />
-        </div>
-        <img
-          id="uploadImage"
-          src="../assets/images/placeholder.png"
-          @click="upload"
-        />
-
-        <div
-          class="button is-fullwidth is-main2"
-          :disabled="!uploaded || !selected"
-          @click="generate"
-        >
-          作成
-        </div>
-
-        <canvas id="canvas"></canvas>
       </section>
     </div>
 
@@ -78,13 +25,12 @@
       <div class="hero-body">
         <div class="container">
           <div class="columns is-centered">
-            <div class="column has-text-centered">
+            <div class="column has-text-centered is-half">
               <img
-                src="../assets/images/thx.png"
-                alt="thankyou for comming"
-                class="thx px-6 mb-2 mt-6"
+                class="box"
+                id="canvasImage"
+                src="../assets/images/rice.jpeg"
               />
-              <img id="canvasImage" src="../assets/images/placeholder.png" />
               <p v-show="uploaded" class="pt-3 pb-6 mb-6">
                 画像を長押しして保存できます
               </p>
@@ -104,9 +50,6 @@ import { storage } from "@/plugins/firebase";
 export default {
   data() {
     return {
-      selected: null,
-      options: guests.guests,
-      uploaded: false,
       isGenerationStarted: false,
       isGenerated: false
     };
@@ -117,104 +60,17 @@ export default {
       file.click();
     },
     generate() {
-      if (this.uploaded && this.selected) {
-        this.isGenerationStarted = true;
-        this.isGenerated = true;
-        setTimeout(() => {
-          this.isGenerationStarted = false;
-        }, 4000);
-      }
+      this.isGenerationStarted = true;
+      this.isGenerated = true;
+      setTimeout(() => {
+        this.isGenerationStarted = false;
+      }, 4000);
     }
   },
   components: {
     vSelect
   },
-  mounted() {
-    const self = this;
-
-    var file = document.getElementById("file");
-    function loadLocalImage(e) {
-      var fileData = e.target.files[0];
-      if (!fileData.type.match("image.*")) {
-        alert("画像を選択してください");
-        return;
-      }
-
-      var image = new Image();
-      var message = new Image();
-      var reader = new FileReader();
-
-      reader.onload = function(event) {
-        image.onload = function() {
-          var canvas = document.getElementById("canvas");
-          canvas.width = image.naturalWidth;
-          canvas.height = image.naturalHeight;
-          var ctx = canvas.getContext("2d");
-          ctx.drawImage(image, 0, 0);
-
-          message.src = require("~/assets/images/messages/message" +
-            guests.guestsIdMap[self.selected] +
-            ".PNG");
-
-          message.addEventListener("load", e => {
-            var messageWidth = image.naturalHeight * 1.333;
-            var messageHeight = image.naturalHeight;
-            var messageDx = image.naturalWidth - image.naturalHeight * 1.333;
-            ctx.drawImage(
-              message,
-              0,
-              0,
-              message.naturalWidth,
-              message.naturalHeight,
-              messageDx,
-              0,
-              image.naturalHeight * 1.333,
-              image.naturalHeight
-            );
-
-            self.uploaded = true;
-            document.getElementById("canvasImage").src = canvas.toDataURL();
-            var base64 = canvas.toDataURL("image/png");
-            var bin = atob(base64.replace(/^.*,/, ""));
-            var buffer = new Uint8Array(bin.length);
-            for (var i = 0; i < bin.length; i++) {
-              buffer[i] = bin.charCodeAt(i);
-            }
-            // Blobを作成
-            var blob = new Blob([buffer.buffer], {
-              type: "image/png"
-            });
-
-            const storageRef = storage.ref();
-
-            var now = new Date();
-            storageRef
-              .child(
-                "images/" +
-                  self.selected +
-                  "_" +
-                  now.getDate() +
-                  "日_" +
-                  now.getHours() +
-                  ":" +
-                  now.getMinutes() +
-                  ".png"
-              )
-              .put(blob)
-              .then(res => {});
-          });
-        };
-
-        image.src = event.target.result;
-
-        // 反映するだけ
-        document.getElementById("uploadImage").src = event.target.result;
-      };
-
-      reader.readAsDataURL(fileData);
-    }
-    file.addEventListener("change", loadLocalImage, false);
-  }
+  mounted() {}
 };
 </script>
 <style lang="scss" scoped>
@@ -254,24 +110,6 @@ export default {
           transform: translateY(10px);
         }
       }
-    }
-  }
-
-  #form {
-    .upload {
-      input {
-        display: none;
-      }
-    }
-
-    .v-select /deep/ .vs__dropdown-toggle {
-      border-radius: 0px !important;
-      border: 0;
-      border-bottom: 1px solid $main2;
-    }
-
-    .button {
-      border-radius: 0px;
     }
   }
 
@@ -337,14 +175,6 @@ export default {
     background-color: $main1;
     height: 100vh;
     z-index: -10;
-  }
-
-  #canvasImage {
-    max-width: 100%;
-    width: 100%;
-  }
-  #canvas {
-    display: none;
   }
 }
 </style>
