@@ -1,0 +1,34 @@
+@import "~bulma/sass/utilities/initial-variables";
+@import "~bulma/sass/utilities/functions";
+
+// 色
+$primary: #f4841a;
+$info: #1aa9e2;
+
+$main1: #f7efe9;
+$main1-invert: findColorInvert($main1);
+$main2: #a07f6c;
+$main2-invert: findColorInvert($main2);
+$main3: #4d4d4d;
+$main3-invert: findColorInvert($main3);
+
+$tablet: 651px;
+
+@import "~bulma/sass/utilities/derived-variables.sass";
+$addColors: (
+  "main1": (
+    $main1,
+    $main1-invert
+  ),
+  "main2": (
+    $main2,
+    $main2-invert
+  ),
+  "main3": (
+    $main3,
+    $main3-invert
+  )
+);
+$colors: map-merge($colors, $addColors);
+
+@import "~bulma/bulma";
