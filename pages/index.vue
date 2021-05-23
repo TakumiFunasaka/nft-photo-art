@@ -7,12 +7,8 @@
             <figure class="image p-5">
               <img src="../assets/images/ricetime.png" />
             </figure>
-            <div
-              class="button is-main2"
-              :disabled="!uploaded || !selected"
-              @click="generate"
-            >
-              作成
+            <div class="button is-black" @click="generate">
+              check rice.
             </div>
           </div>
         </div>
@@ -77,8 +73,8 @@ export default {
 @import "../assets/styles/variables.scss";
 
 * {
-  font-family: "UtsukuchiMincho", "Helvetica Neue", Arial,
-    "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans", Meiryo, sans-serif;
 }
 #photoletter {
   color: $main3;
@@ -96,7 +92,7 @@ export default {
 
     .hero-foot {
       .scroll {
-        color: $main3;
+        color: #535353;
         line-height: 3.5;
       }
       .image {
@@ -119,7 +115,7 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: $main3;
+    background-color: #535353;
     z-index: 9999;
     animation: byeShutter 4s forwards;
 
@@ -130,7 +126,7 @@ export default {
       left: 0;
       bottom: 0;
       margin: auto;
-      background-color: $main1;
+      background-color: white;
       width: 0;
       height: 1px;
       animation: shutterOpen 4s forwards;
@@ -172,7 +168,7 @@ export default {
   }
 
   #complete {
-    background-color: $main1;
+    background-color: white;
     height: 100vh;
     z-index: -10;
   }
